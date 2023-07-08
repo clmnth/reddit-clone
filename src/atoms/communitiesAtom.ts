@@ -10,21 +10,22 @@ export interface Community {
    imageURL?: string,
 }
 
-interface CommunitySnippet {
-   community: string;
+export interface CommunitySnippet {
+   communityId: string;
    isModerator?: boolean;
    imageURL?: string; 
 }
 
 interface CommunityState {
    MySnippets: CommunitySnippet[];
+   // visitedCommunities
 }
 
 const defaultCommunityState: CommunityState = {
    MySnippets: []
 }
 
-export const CommunityState = atom<CommunityState>({
+export const communityState = atom<CommunityState>({
    key: 'communitiesState',
    default: defaultCommunityState
-})
+});

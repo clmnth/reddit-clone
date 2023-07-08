@@ -1,4 +1,4 @@
-import { Community } from "@/src/atoms/communityAtom";
+import { Community } from "@/src/atoms/communitiesAtom";
 import CommunityNotFound from "@/src/components/Community/CommunityNotFound";
 import Header from "@/src/components/Community/Header";
 import PageContent from "@/src/components/layout/PageContent";
