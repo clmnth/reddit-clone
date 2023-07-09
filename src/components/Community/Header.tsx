@@ -14,6 +14,8 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
     (item) => item.communityId === communityData.id
   );
 
+  console.log("isJoined", isJoined);
+
   return (
     <Flex direction="column" width="100%" height="146px">
       <Box height="50%" bg="blue.400" />
