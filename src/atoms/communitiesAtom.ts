@@ -17,12 +17,12 @@ export interface CommunitySnippet {
 }
 
 interface CommunityState {
-   MySnippets: CommunitySnippet[];
+   mySnippets: CommunitySnippet[];
    // visitedCommunities
 }
 
 const defaultCommunityState: CommunityState = {
-   MySnippets: []
+   mySnippets: [],
 }
 
 export const communityState = atom<CommunityState>({
