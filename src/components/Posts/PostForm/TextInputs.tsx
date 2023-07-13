@@ -1,6 +1,6 @@
 import { Button, Flex, Input, Stack, Textarea } from "@chakra-ui/react";
 import React from "react";
-import { MdBorderColor } from "react-icons/md";
+
 
 type TextInputsProps = {
   textInputs: {
@@ -34,7 +34,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           outline: "none",
           bg: "white",
           border: "1px solid",
-          MdBorderColor: "black",
+          BorderColor: "black",
         }}
       />
       <Textarea
@@ -50,10 +50,10 @@ const TextInputs: React.FC<TextInputsProps> = ({
           outline: "none",
           bg: "white",
           border: "1px solid",
-          MdBorderColor: "black",
+          BorderColor: "black",
         }}
       />
-      <Flex>
+      <Flex justify="flex-end">
         <Button
           height="34px"
           padding="0px 30px"
