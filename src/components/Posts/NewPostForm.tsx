@@ -5,7 +5,7 @@ import {
   AlertTitle,
   Flex,
   Icon,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { BiPoll } from "react-icons/bi";
@@ -84,6 +84,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
       numberOfComments: 0,
       voteStatus: 0,
       createdAt: serverTimestamp() as Timestamp,
+      // id: ""
     };
 
     setLoading(true);
@@ -102,13 +103,13 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
           imageURL: downloadURL,
         });
       }
+      // redirect the user back to the communityPage using the router
+      router.back();
     } catch (error: any) {
       console.log("handleCreatePost error", error.message);
       setError(true);
     }
     setLoading(false);
-    // redirect the user back to the communityPage using the router
-    //  router.back();
   };
 
   const onSelectImage = (event: React.ChangeEvent<HTMLInputElement>) => {
