@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Flex, Box, Icon, Image, Text, Button } from "@chakra-ui/react";
-import { Community } from "@/src/atoms/communitiesAtom";
+import { Community, communityState } from "@/src/atoms/communitiesAtom";
 import { FaReddit } from "react-icons/fa";
 import useCommunityData from "../../hooks/useCommunityData";
 
@@ -9,7 +9,8 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
-  const { communityStateValue, onJoinOrLeaveCommunity, loading } = useCommunityData();
+  const { communityStateValue, onJoinOrLeaveCommunity, loading } =
+    useCommunityData();
   const isJoined = !!communityStateValue.mySnippets.find(
     (item) => item.communityId === communityData.id
   );
@@ -21,8 +22,16 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
       <Box height="50%" bg="blue.400" />
       <Flex justify="center" bg="white" flexGrow={1}>
         <Flex width="95%" maxWidth="860px">
-          {communityData.imageURL ? (
-            <Image />
+          {communityStateValue.currentCommunity?.imageURL ? (
+            <Image
+              src={communityStateValue.currentCommunity.imageURL}
+              borderRadius="full"
+              boxSize="66px"
+              position="relative"
+              top={-3}
+              color="blue.500"
+              border="4px solid white"
+            />
           ) : (
             <Icon
               as={FaReddit}
@@ -31,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
               top={-3}
               color="blue.500"
               border="4px solid white"
-              borderRadius="50%"
+              borderRadius="full"
             />
           )}
           <Flex padding="10px 16px">
