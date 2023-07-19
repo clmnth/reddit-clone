@@ -25,11 +25,11 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityData }) => {
   }
 
   useEffect(() => {
-setCommunityStateValue(prev => ({
-  ...prev,
-  currentCommunity: communityData,
-}))
-  }, [])
+    setCommunityStateValue((prev) => ({
+      ...prev,
+      currentCommunity: communityData,
+    }));
+  }, []);
 
   return (
     <>
@@ -40,7 +40,7 @@ setCommunityStateValue(prev => ({
           <Posts communityData={communityData} />
         </>
         <>
-          <About communityData={communityData}/>
+          <About communityData={communityData} />
         </>
       </PageContent>
     </>
