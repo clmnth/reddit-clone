@@ -1,17 +1,19 @@
-import { Post } from "@/src/atoms/postsAtom";
+import { Post, postState } from "@/src/atoms/postsAtom";
 import About from "@/src/components/Community/About";
+import Comments from "@/src/components/Posts/Comments/Comments";
 import PostItem from "@/src/components/Posts/PostForm/PostItem";
 import PageContent from "@/src/components/layout/PageContent";
 import { auth, firestore } from "@/src/firebase/clientApp";
 import useCommunityData from "@/src/hooks/useCommunityData";
 import usePosts from "@/src/hooks/usePosts";
+import { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { IoTennisball } from "react-icons/io5";
 
 const PostPage: React.FC = () => {
+  console.log("PostPage is being rendered");
   const [user] = useAuthState(auth);
   const { postStateValue, setPostStateValue, onDeletePost, onVote } =
     usePosts();
@@ -55,8 +57,11 @@ const PostPage: React.FC = () => {
             userIsCreator={user?.uid === postStateValue.selectedPost?.creatorId}
           />
         )}
-
-        {/* Comments */}
+        <Comments
+          user={user as User}
+          selectedPost={postStateValue.selectedPost}
+          communityId={postStateValue.selectedPost?.communityId as string}
+        />
       </>
       <>
         {communityStateValue.currentCommunity && (
