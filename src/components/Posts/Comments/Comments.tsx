@@ -1,7 +1,14 @@
 import { Post, postState } from "@/src/atoms/postsAtom";
-import { Box, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import CommentInput from "./CommentInput";
 import { setHttpClientAndAgentOptions } from "next/dist/server/config";
 import {
@@ -9,27 +16,22 @@ import {
   collection,
   doc,
   increment,
+  onSnapshot,
+  query,
   serverTimestamp,
+  where,
   writeBatch,
+  orderBy,
+  getDocs,
 } from "firebase/firestore";
 import { firestore } from "@/src/firebase/clientApp";
 import { useSetRecoilState } from "recoil";
+import CommentItem, { Comment } from "./CommentItem";
 
 type CommentsProps = {
   selectedPost: Post | null;
   user: User;
   communityId: string;
-};
-
-export type Comment = {
-  id: string;
-  creatorId: string;
-  creatorDisplayText: string;
-  communityId: string;
-  postId: string;
-  postTitle: string;
-  text: string;
-  createdAt: Timestamp;
 };
 
 const Comments: React.FC<CommentsProps> = ({
@@ -39,7 +41,7 @@ const Comments: React.FC<CommentsProps> = ({
 }) => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
-  const [fetchLoading, setFetchLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [createLoading, setCreateLoading] = useState(false);
   const setPostState = useSetRecoilState(postState);
 
@@ -63,6 +65,8 @@ const Comments: React.FC<CommentsProps> = ({
       };
 
       batch.set(commentDocRef, newComment);
+
+      newComment.createdAt = { seconds: Date.now() / 1000 } as Timestamp;
 
       // update post numberOfComments +1
       const postDocRef = doc(firestore, "posts", selectedPost?.id!);
@@ -88,22 +92,45 @@ const Comments: React.FC<CommentsProps> = ({
     setCreateLoading(false);
   };
 
-  const onDeleteComment = async (comment: any) => {};
-  // delete a comment document
-  // update post numberOfComments -1
+  const onDeleteComment = async (comment: any): Promise<boolean> => {
+    return true;
+    // delete a comment document
+    // update post numberOfComments -1
 
-  // update client recoil state
+    // update client recoil state
+  };
 
-  const getPostComments = async () => {};
+  // const comment = async () => {};
+
+  const getPostComments = async () => {
+    try {
+      const commentsQuery = query(
+        collection(firestore, "comments"),
+        where("postId", "==", selectedPost?.id),
+        orderBy("createdAt", "desc")
+      );
+      const commentDocs = await getDocs(commentsQuery);
+      const comments = commentDocs.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setComments(comments as Comment[]);
+    } catch (error) {
+      console.log("getPostComments error", error);
+    }
+    setFetchLoading(false);
+  };
 
   useEffect(() => {
+    if (!selectedPost) return;
     getPostComments();
-  }, []);
+  }, [selectedPost]);
 
   console.log("Comments component is being rendered");
+  console.log(comments);
 
   return (
-    <Box bg="white" borderRadius="0px 0px 4px 4px">
+    <Box bg="white" p={2} borderRadius="0px 0px 4px 4px">
       <Flex
         direction="column"
         pl={10}
@@ -112,14 +139,57 @@ const Comments: React.FC<CommentsProps> = ({
         fontSize="10pt"
         width="100%"
       >
-        <CommentInput
-          commentText={commentText}
-          setCommentText={setCommentText}
-          user={user}
-          createLoading={createLoading}
-          onCreateComment={onCreateComment}
-        />
+        {!fetchLoading && (
+          <CommentInput
+            commentText={commentText}
+            setCommentText={setCommentText}
+            user={user}
+            createLoading={createLoading}
+            onCreateComment={onCreateComment}
+          />
+        )}
       </Flex>
+      <Stack spacing={6} p={2}>
+        {fetchLoading ? (
+          <>
+            {[0, 1, 2].map((item) => (
+              <Box key={item} padding="6" bg="white">
+                <SkeletonCircle size="10" />
+                <SkeletonText mt="4" noOfLines={2} spacing="4" />
+              </Box>
+            ))}
+          </>
+        ) : (
+          <>
+            {comments.length === 0 ? (
+              <Flex
+                direction="column"
+                justify="center"
+                align="center"
+                borderTop="1px solid"
+                borderColor="gray.100"
+                p={20}
+              >
+                <Text fontWeight={700} opacity={0.3}>
+                  No Comments Yet
+                </Text>
+              </Flex>
+            ) : (
+              <>
+                {comments.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    onDeleteComment={onDeleteComment}
+                    userId={user?.uid}
+                    loadingDelete={false}
+                  />
+                ))}
+              </>
+            )}
+          </>
+        )}
+      </Stack>
     </Box>
   );
 };
