@@ -69,17 +69,16 @@ const useCommunityData = () => {
   };
 
   const joinCommunity = async (communityData: Community) => {
-    // batch write
-    // create a new community nippet
-    // update the numberOfMembers
-
+    
     setLoading(true);
 
     try {
+      // create a new community nippet
       const batch = writeBatch(firestore);
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
         imageURL: communityData.imageURL || "",
+        isModerator: user?.uid === communityData.creatorId,
       };
 
       batch.set(
@@ -149,7 +148,10 @@ const useCommunityData = () => {
 
       setCommunityStateValue((prev) => ({
         ...prev,
-        currentCommunity: {id: communityDoc.id, ...communityDoc.data() } as Community
+        currentCommunity: {
+          id: communityDoc.id,
+          ...communityDoc.data(),
+        } as Community,
       }));
       return;
     } catch (error) {
