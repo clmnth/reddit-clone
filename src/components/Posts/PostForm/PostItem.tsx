@@ -11,6 +11,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import moment from "moment";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -29,9 +30,15 @@ type PostItemProps = {
   post: Post;
   userIsCreator: boolean;
   userVoteValue?: number;
-  onVote: (event: React.MouseEvent<SVGElement, MouseEvent>, post: Post, vote: number, communityId: string) => void;
+  onVote: (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    vote: number,
+    communityId: string
+  ) => void;
   onDeletePost: (post: Post) => Promise<boolean>;
   onSelectPost?: (post: Post) => void;
+  homePage?: boolean;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -41,6 +48,7 @@ const PostItem: React.FC<PostItemProps> = ({
   onVote,
   onDeletePost,
   onSelectPost,
+  homePage,
 }) => {
   console.log("PostItem component is being rendered");
   const [loadingImage, setLoadingImage] = useState(true);
@@ -50,7 +58,9 @@ const PostItem: React.FC<PostItemProps> = ({
 
   const [error, setError] = useState(false);
 
-  const handleDelete = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleDelete = async (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     event.stopPropagation();
     setLoadingDelete(true);
     try {
@@ -62,7 +72,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
       console.log("Post was succesfully deleted");
       if (singlePostPage) {
-        router.push(`/r/${post.communityId}`)
+        router.push(`/r/${post.communityId}`);
       }
     } catch (error: any) {
       setError(error.message);
@@ -74,8 +84,8 @@ const PostItem: React.FC<PostItemProps> = ({
     <Flex
       border="1px solid"
       bg="white"
-      borderColor={singlePostPage ? 'white' : 'gray.300'}
-      borderRadius={singlePostPage ? '4px 4px 0px 0px' : "4px"}
+      borderColor={singlePostPage ? "white" : "gray.300"}
+      borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
       _hover={{ borderColor: singlePostPage ? "none" : "gray.500" }}
       cursor={singlePostPage ? "unset" : "pointer"}
       onClick={() => onSelectPost && onSelectPost(post)}
@@ -83,10 +93,10 @@ const PostItem: React.FC<PostItemProps> = ({
       <Flex
         direction="column"
         align="center"
-        bg={ singlePostPage ? "none" : "gray.100"}
+        bg={singlePostPage ? "none" : "gray.100"}
         p={2}
         width="40px"
-        borderRadius={ singlePostPage ? "0" : "3px 0px 0px 3px"}
+        borderRadius={singlePostPage ? "0" : "3px 0px 0px 3px"}
       >
         <Icon
           as={
@@ -106,7 +116,7 @@ const PostItem: React.FC<PostItemProps> = ({
           }
           color={userVoteValue === -1 ? "#4379ff" : "gray.400"}
           fontSize={22}
-          onClick={(event) =>onVote(event, post, -1, post.communityId)}
+          onClick={(event) => onVote(event, post, -1, post.communityId)}
           cursor="pointer"
         />
       </Flex>
@@ -121,6 +131,27 @@ const PostItem: React.FC<PostItemProps> = ({
         <Stack spacing={1} p="10px">
           <Stack direction="row" spacing={0.6} align="center" fontSize="9pt">
             {/* Home Page Check */}
+            {homePage && (
+              <>
+                {post.communityImageURL ? (
+                  <Image
+                    src={post.communityImageURL}
+                    borderRadius="full"
+                    boxSize="18px"
+                  />
+                ) : (
+                  <Icon as={FaReddit} fontSize="18pt" mr={1} color="blue.500" />
+                )}
+                <Link href={`r/${post.communityId}`}>
+                  <Text
+                    fontWeight={700}
+                    _hover={{ TextDecoration: "underLine" }}
+                    onClick={(event) => event.stopPropagation()}
+                  >{`r/${post.communityId}`}</Text>
+                </Link>
+                <Icon as={BsDot} color="gray.500" fontSize={8} />
+              </>
+            )}
             <Text>
               Posted by u/{post.creatorDisplayName}{" "}
               {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
