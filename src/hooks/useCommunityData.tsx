@@ -57,6 +57,7 @@ const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: snippets as CommunitySnippet[],
+        snippetsFetched: true,
       }));
 
       console.log("here are snippetDocs", snippetDocs);
@@ -69,7 +70,6 @@ const useCommunityData = () => {
   };
 
   const joinCommunity = async (communityData: Community) => {
-    
     setLoading(true);
 
     try {
@@ -164,6 +164,7 @@ const useCommunityData = () => {
       setCommunityStateValue((prev) => ({
         ...prev,
         mySnippets: [],
+        snippetsFetched: false,
       }));
       return;
     }
