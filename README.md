@@ -55,9 +55,6 @@ Implementing authentication buttons and modals
 - Customizing community images
 - Voting on posts
 
-## Deployment and Security
-The course concludes with a detailed explanation of deploying the project with [Vercel](https://vercel.com/) and implementing Firebase security rules.
-
 ## Resources
 Watch the full course on the freeCodeCamp.org YouTube channel to access the complete set of video tutorials for this project. 
 
