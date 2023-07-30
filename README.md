@@ -54,7 +54,7 @@ Implementing authentication buttons and modals
 - Handling post deletion
 - Customizing community images
 - Voting on posts
-
+git push origin main
 ## Resources
 Watch the full course on the freeCodeCamp.org YouTube channel to access the complete set of video tutorials for this project. 
 
